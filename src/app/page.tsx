@@ -1,95 +1,55 @@
+'use client'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
+import citizen from '../../CitizenLogoWhite.png'
 import styles from './page.module.css'
 
-export default function Home() {
+type Account = {
+  address: string
+  coins: Coin[]
+}
+
+type Coin = {
+  denom: string
+  amount: string
+}
+
+function page() {
+  const [accounts, setAccounts] = useState<Account[]>([])
+  const names: string[] = ['Alice', 'Bob', 'Carol']
+
+
+  useEffect(() => {
+    const getGenesisData = async () => {
+      const res = await fetch('http://0.0.0.0:26657/genesis?exported_loan.json')
+      const data = await res.json()
+      data.result.genesis.app_state.bank.balances.forEach((account: any) => {
+        setAccounts((accounts) => [...accounts, account])
+      })
+    }
+    getGenesisData()
+  }, [])
+
+  console.log(accounts)
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div>
+      <h1>Citizen <Image src={citizen} alt='citizen logo' height={50} width={50}></Image></h1>
+      <div className={styles.main}>
+        {accounts.map((account, index) => (
+          <div style={{border: "4px solid white", borderRadius: ".5rem", margin: "1rem"}} key={account.address}>
+            <div className={styles.description}>{names[index]}:  {account.address}</div>
+            <div className={styles.description}>
+              {account.coins.map((coin) => (
+                <div key={coin.denom}>
+                  {coin.denom}: {coin.amount}
+                </div>
+              ))}
+            </div>
+          </div>))}
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </div>
   )
 }
+
+export default page

@@ -1,21 +1,31 @@
 .main {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
+  text-align: center;
 }
-
+.main2{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  border: 5px solid white;
+  border-radius: .5rem;
+}
 .description {
   display: inherit;
   justify-content: inherit;
   align-items: inherit;
-  font-size: 0.85rem;
+  font-size: 1.1rem;
   max-width: var(--max-width);
-  width: 100%;
+  width: 80%;
   z-index: 2;
   font-family: var(--font-mono);
+  padding: 1rem;
 }
 
 .description a {
