@@ -1,16 +1,8 @@
 'use client'
 import React, {useState, useEffect} from 'react'
 import Loans from './loans'
+import { Loan }from '@/app/types/Loan'
 
-type Loan = {
-  id?: number 
-  amount: string
-  fee: string
-  collateral: string
-  deadline: string
-  state: string
-  borrower: string 
-}
 function page() {
   const [state, setState] = useState<Loan[]>([] as Loan[])
 

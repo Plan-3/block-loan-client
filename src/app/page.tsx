@@ -23,8 +23,18 @@ function page() {
     const getGenesisData = async () => {
       const res = await fetch('http://0.0.0.0:26657/genesis?exported_loan.json')
       const data = await res.json()
-      data.result.genesis.app_state.bank.balances.forEach((account: any) => {
-        setAccounts((accounts) => [...accounts, account])
+      data.result.genesis.app_state.bank.balances.forEach(async (account: any) => {
+        const res = await fetch(`http://localhost:8080/getaccounts/${account.address}`)
+        
+        const data = await res.json()
+        console.log(data);
+        
+        let acc: Account = {
+          address: account.address,
+          coins: data
+        }
+        
+        setAccounts((prevState) => [...prevState, acc])
       })
     }
     getGenesisData()
