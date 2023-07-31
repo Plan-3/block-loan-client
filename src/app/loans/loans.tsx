@@ -24,7 +24,10 @@ function loans(loans: any) {
             <p>Deadline: {loan.deadline}</p>
             <p>Status: {loan.state}</p>
             <p>Borrower: {loan.borrower}</p>
-            <button onClick={() => approveLoan(loan.id)}>Approve</button>
+            <button onClick={() => approveLoan(
+              // @ts-ignore
+              loan.id
+              )}>Approve</button>
           </div>
           )
         )}

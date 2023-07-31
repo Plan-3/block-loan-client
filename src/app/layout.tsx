@@ -1,5 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
+import BlockContext from './blockheight'
 
 export const metadata: Metadata = {
   title: 'Citizen',
@@ -13,7 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <BlockContext>
+          {children}
+        </BlockContext>
+      </body>
     </html>
   )
 }

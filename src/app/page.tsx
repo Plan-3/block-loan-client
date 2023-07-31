@@ -1,8 +1,10 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 import citizen from '../../CitizenLogoWhite.png'
 import styles from './page.module.css'
+import { BlockContext } from './blockheight'
 
 type Account = {
   address: string
@@ -18,6 +20,9 @@ function page() {
   const [accounts, setAccounts] = useState<Account[]>([])
   const names: string[] = ['Alice', 'Bob', 'Carol']
 
+  let block = useContext(BlockContext)
+  console.log(block);
+  
 
   useEffect(() => {
     const getGenesisData = async () => {
@@ -48,7 +53,7 @@ function page() {
       <div className={styles.main}>
         {accounts.map((account, index) => (
           <div style={{border: "4px solid white", borderRadius: ".5rem", margin: "1rem"}} key={account.address}>
-            <div className={styles.description}>{names[index]}:  {account.address}</div>
+            <div className={styles.description}>{names[index]}: <Link href={`/account/${account.address}`}>{account.address}</Link></div>
             <div className={styles.description}>
               {account.coins.map((coin) => (
                 <div key={coin.denom}>
