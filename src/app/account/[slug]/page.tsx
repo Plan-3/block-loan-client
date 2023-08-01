@@ -1,12 +1,11 @@
 "use client"
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import { Loan }from '@/app/types/Loan'
 import loan from '@/app/loan/page'
+import { BlockContext } from '@/app/blockheight'
 
 function page({ params }: { params: { slug: string } }) {
   const [state, setState] = useState<Loan[]>([] as Loan[])
-  let filtered: Loan[];
-  let filterByState: Loan[];
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,20 +22,40 @@ function page({ params }: { params: { slug: string } }) {
     fetchData()
   },[])
 
-  useEffect(() => {
-    filtered = state.filter((loan) => loan.borrower === params.slug)
-    filterByState = filtered.filter((loan) => loan.state === "liquidated")
-    
-  },[state])
+  const {blockHeight} = useContext(BlockContext)
+
+  const repayloan = async (loan: Loan) => {
+
+    const l = {
+      Creator: params.slug,
+      Id: loan.id,
+    }
+
+    const result = await fetch(`http://localhost:8080/repayloan`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(l)
+    })
+    const data = await result.json()
+    console.log(data)
+  }
+  
+
   return (
     // @ts-ignore
     <div>{state.map((loan) => {
-      if(loan.state == "cancelled" && loan.borrower != params.slug){
+      if(loan.state != "approved" || loan.borrower != params.slug){
         return;
       }
       return (
         <div key={loan.id}>
           <h1>{loan.borrower}</h1>
+          <h2>{loan.amount}</h2>
+          <h3>{loan.state}</h3>
+          <h3>{loan.deadline}</h3>
+          {(blockHeight < (Number(loan.deadline) + blockHeight)) ? <p onClick={() => repayloan(loan)}>Repay</p> : <p>Loan is past due and will be liquidated</p>}
         </div>
       )
     })}</div>
